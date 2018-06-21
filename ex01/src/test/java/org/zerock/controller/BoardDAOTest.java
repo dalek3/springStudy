@@ -15,7 +15,7 @@ import org.zerock.persistence.BoardDAO;
 @ContextConfiguration(
 		locations = {"classpath:spring/root-context.xml"})
 public class BoardDAOTest {
-
+/*
 	@Inject
 	private BoardDAO dao;
 	
@@ -49,5 +49,5 @@ public class BoardDAOTest {
 	public void testDelete() throws Exception {
 		dao.delete(1);
 	}
-
+*/
 }
