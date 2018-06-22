@@ -8,8 +8,9 @@
 	<settings>
 		<setting name="cacheEnabled" value="false"/>
 	</settings>
-    
+
     <typeAliases>
         <package name="org.zerock.domain"/>
     </typeAliases>
+
 </configuration>
