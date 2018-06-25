@@ -309,7 +309,7 @@ $(document).ready(function(){
         
     $(".goListBtn").on("click", function(){
         formObj.attr("method", "get");
-        formObj.attr("action", "/sboard/listPage");
+        formObj.attr("action", "/sboard/list");
         formObj.submit();
     });
     

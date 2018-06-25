@@ -95,11 +95,12 @@ public class SearchBoardController {
 		
 		rttr.addFlashAttribute("msg", "SUCCESS");
 		
+  		logger.info(rttr.toString());
 		return "redirect:/sboard/list";
 	}
 	
 	@RequestMapping(value="/register", method = RequestMethod.GET)
-	public void registerGET(BoardVO board, Model model) throws Exception {
+	public void registerGET() throws Exception {
 		logger.info("register get");
 	}
 
