@@ -1,0 +1,6 @@
+- 스프링에서 어노테이션을 이용해서 어떻게 돌아가는 지에 대해 설명
+- 출처: 
+    - 엑셈아카데미 : http://exem-academy.com/
+    - JAVA,잡아버려잉 포스트 : http://naver.me/xoN0BtyW
+    - 예제소스(26~34장)다운로드 : https://cafe.naver.com/playexem/816
+    - 책정보 : https://book.naver.com/bookdb/book_detail.nhn?bid=12331612
