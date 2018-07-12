@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
 @Configuration
+// diEx080과 다르게 bean쪽에서 한 통으로 모아서 사용
 @ImportResource("classpath:beanDiEx090.xml")
 public class ConfigApp {
 

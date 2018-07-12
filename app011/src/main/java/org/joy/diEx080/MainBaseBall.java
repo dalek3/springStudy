@@ -1,11 +1,14 @@
 package org.joy.diEx080;
 
+import org.joy.diEx070.ConfigApp;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 public class MainBaseBall {
 	public static void main(String [] args){
-		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:beanDiEx080.xml");
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ConfigApp.class);
+		// AbstractApplicationContext ctx2 = new GenericXmlApplicationContext("classpath:beanDiEx080.xml");
 		Player player1 = ctx.getBean("player1", Player.class);
 		System.out.println("선수이름 :"+player1.getName());
 		System.out.println("나이 :"+player1.getAge());
