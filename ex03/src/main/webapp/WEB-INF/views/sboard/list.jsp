@@ -70,7 +70,7 @@
 							<td>
 								<a href="/sboard/readPage${pageMaker.makeSearch(pageMaker.cri.page)
 								}&bno=${boardVO.bno}">
-								${boardVO.title}</a>
+								${boardVO.title} <strong>[ ${boardVO.replycnt} ]</strong></a>
 							</td>
 							<td>${boardVO.writer}</td>
 							<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm"

@@ -75,11 +75,13 @@
 		           <button type="submit" class="btn btn-primary" id="replyAddBtn">ADD REPLY</button>
 		       </div>
 	       </div>
-	           <!-- The time line -->
+        <!-- The time line -->
 	    <ul class="timeline">
 	       <!-- timeline time label -->
 	       <li class="time-label" id="repliesDiv">
-	           <span class="bg-green">Replies List</span>
+	           <span class="bg-green">
+	           Replies List <small id="replycntSmall"> [ ${boardVO.replycnt} ]</small>
+	           </span>
 	       </li>
 	    </ul>
 	    
@@ -168,6 +170,7 @@ var printData = function (replyArr, target, templateObject){
 			printPaging(data.pageMaker, $(".pagination"));
 
 			$("#modifyModal").modal('hide');
+			$("#replycntSmall").html("[ " + data.pageMaker.totalCount + " ]")
 
 		});
 	}
