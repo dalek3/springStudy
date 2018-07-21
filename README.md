@@ -57,10 +57,10 @@
     - `base-package` 속성값에 해당하는 패키지 내부의 클래스들을 조사한다는 뜻
     - 이는 `<annotation-driven>`과 같이 결합해서 해당 패키지에 애노테이션 처리가 된 컨트롤러를 작성만 해주면 자동으로 인식되게 한다.
 
-```xml
-<!-- Controller 객체 위치 등록 -->
-<context:component-scan base-package="org.zerock.controller" />
-```
+    ```xml
+    <!-- Controller 객체 위치 등록 -->
+    <context:component-scan base-package="org.zerock.controller" />
+    ```
 ### 2. DB
 #### 1. pom.xml
 1. mysql-connector-java 
@@ -73,9 +73,19 @@
     <version>8.0.11</version>
 </dependency>
 ```
+2. spring-jdbc : spring과 mybatis를 같이 사용하는 경우에는 주로 spring의 설정으로 jdbc 연결을 처리하는 경우가 많기 때문에 사용 (뒤에 또나옴)
+
+```xml
+<!-- spring-jdbc -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>${org.springframework-version}</version>
+</dependency>
+```
 #### 2. root-content.xml
 - namespaces: aop, context, jdbc, mybatis-spring
-1. dataSource : jdbc의 커넥션을 처리하는 기능을 가지고 있기 때문에 db와 연동 작업에 반드시 필요(spring-jdbc 모듈 이용)
+1. dataSource : jdbc의 커넥션을 처리하는 기능을 가지고 있기 때문에 db와 연동 작업에 반드시 필요(**spring-jdbc 모듈 이용**)
     - class속성의 값을 보면 `org.springframework.jdbc.datasource.xxx`로 시작하는 것을 볼 수 있다.
     - 이 속성의 값에 해당하는 클래스가 존재해야 하기 때문에 이전 단계에 spring-jdbc 모듈을 추가해 준 것이다.
     <br>.
@@ -83,44 +93,15 @@
     - 뒤에 이 속성의 값을 이용해서 다른 객체와 연결하는 모습을 볼 수 있다.
     - (dataSource 값을 그대로 사용하는 것이 향후에 에러가 발생할 가능성이 적다.) 
 
-```xml
-<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="driverClassName" value=""></property>
-    <property name="url"             value=""></property>
-    <property name="username"        value=""></property>
-    <property name="password"        value=""></property>
-</bean>
-```
-### 3. Test
-#### 1. pom.xml
-1. junit
-
-```xml
-<!-- Test -->
-<dependency>
-    <groupId>junit</groupId>
-    <artifactId>junit</artifactId>
-    <version>4.12</version>
-    <scope>test</scope>
-</dependency>
-<dependency>
-    <groupId>org.hamcrest</groupId>
-    <artifactId>hamcrest-core</artifactId>
-    <version>1.3</version>
-</dependency>
-```
-3. log4j : mybatis로그를 알기위한 모듈 (선택사항) 코딩단 p138 참조
-    - `/src/main/resources` 폴더에 `log4jdbc.log4j2.properties`파일과 `logback.xml`파일을 추가해야 한다.
-
-```xml
-<!-- log4jdbc-log4j2 -->
-<dependency>
-    <groupId>org.bgee.log4jdbc-log4j2</groupId>
-    <artifactId>log4jdbc-log4j2-jdbc4</artifactId>
-    <version>1.16</version>
-</dependency>
-```
-### 4. Mybatis
+    ```xml
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="url"             value="jdbc:mysql://<hostname>:<port_num>/<DB>?characterEncoding=UTF8"></property>
+        <property name="username"        value=""></property>
+        <property name="password"        value=""></property>
+    </bean>
+    ```
+### 3. Mybatis
 #### 1. pom.xml
 1. mybatis
 
@@ -170,16 +151,16 @@
     - spring을 이용할 때는 sqlSessionFactory를 생성해 주는 특별한 객체를 설정
     - class 속성값 `org.mybatis.spring.xxx`은 mybatis-spring 모듈을 다운로드 받아야만 사용할 수 있다.
 
-```xml
-<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-    <property name="dataSource" ref="dataSource" />
-    <!-- 1. mybatis-config.xml파일이 스프링이 동작할 때 같이 동작하도록 설정해 주는 작업 -->
-    <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
-    <!-- 2. mybatis가 동작하면 XML Mapper를 인식해야만 정상적인 동작이 가능.
-        mappers폴더 내에 어떤폴더이건 관계없이 파일이름이 Mapper.xml로 끝나면 자동으로 인식하도록 설정. -->
-    <property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml"></property>
-</bean>
-```
+    ```xml
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 1. mybatis-config.xml파일이 스프링이 동작할 때 같이 동작하도록 설정해 주는 작업 -->
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
+        <!-- 2. mybatis가 동작하면 XML Mapper를 인식해야만 정상적인 동작이 가능.
+            mappers폴더 내에 어떤폴더이건 관계없이 파일이름이 Mapper.xml로 끝나면 자동으로 인식하도록 설정. -->
+        <property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml"></property>
+    </bean>
+    ```
 2. sqlSessionTemplate 설정
     - dao 인터페이스와 Mapper의 작성이 완료됐다면 실제 이를 구현하는 구현 클래스를 작성해야만 한다.
     - mybatis에서 dao를 이용하는 경우는 SqlSessionTemplate이라는 것을 이용해서 dao를 구현하므로,
@@ -190,11 +171,11 @@
     - 정리하면 mybatis-spring에서 제공하는 SqlSessionTemplate은 mybatis의 sqlSession인터페이스를 구현한
     <br>클래스로 기본적인 트랜잭션의 관리나 쓰레드 처리의 안정성 등을 보장해 주고, DB의 연결과 종료를 책임진다.
 
-```xml
-<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
-    <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
-</bean>
-```
+    ```xml
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+    </bean>
+    ```
 3. component-scan
     - *DAOImpl, *ServiceImpl이 @Repository에노테이션이 설정되더라도 스프링에서 해당 패키지를 스캔하지 않으면 
     <br>제대로 스프링의 빈으로 등록되지 못하므로 아래와 같이 작성한다.
@@ -202,46 +183,47 @@
     <context:component-scan base-package="org.zerock.dao"></context:component-scan>
     <context:component-scan base-package="org.zerock.service"></context:component-scan>
     ```
+    
 #### 4. mybatis 관련
 1. mybatis-config.xml (root-content.xml -> sqlSessionFactory -> configLocation랑 같이 볼 것)
     - mybatis는 sql mapping 프레임워크로 별도의 설정 파일을 가질 수 있다.
     - 이를 이용하면 스프링의 설정과 별도로 사용하는 모든 mybatis의 설정 기능을 활용할 수 있다.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration
-    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration>
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+    <configuration>
 
-    <!-- 마이바티스의 작동 규칙정의 : 기본 캐시 사용여부 -->
-    <settings>
-        <setting name="cacheEnabled" value="false"/>
-    </settings>
+        <!-- 마이바티스의 작동 규칙정의 : 기본 캐시 사용여부 -->
+        <settings>
+            <setting name="cacheEnabled" value="false"/>
+        </settings>
 
-    <!-- XML Mapper에서 paramType이나 resultType에 사용하는 클래스의 이름을 축약해서 사용가능하게 해줌 -->
-    <typeAliases>
-        <package name="org.zerock.domain"/>
-    </typeAliases>
+        <!-- XML Mapper에서 paramType이나 resultType에 사용하는 클래스의 이름을 축약해서 사용가능하게 해줌 -->
+        <typeAliases>
+            <package name="org.zerock.domain"/>
+        </typeAliases>
 
-</configuration>
-```
+    </configuration>
+    ```
 2. mappers/**/*Mapper.xml (root-content.xml -> sqlSessionFactory -> mapperLocations랑 같이 볼 것)
     - `namespace`라는 설정에 가장 신경을 많이 써야만 한다.(`<mapper>`)
     - `namespace`속성은 클래스의 패키지와 유사한 용도로, mybatis 내에서 원하는 sql 문을 찾아서 실행할 때 동작한다.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- namespace에 원하는 mapper경로 입력 ex) org.zerock.mapper.BoardMapper-->
-<mapper namespace="">
-    sql문
-</mapper>
-```
-### 5. aop
+    <!-- namespace에 원하는 mapper경로 입력 ex) org.zerock.mapper.BoardMapper-->
+    <mapper namespace="">
+        sql문
+    </mapper>
+    ```
+### 4. aop
 #### 1. pom.xml
 1. aop
 
@@ -299,7 +281,7 @@
 
 <tx:annotation-driven/>
 ```
-### 6. interceptor
+### 5. interceptor
 #### 3. servlet-content.xml
 1. Interceptor 설정
 
@@ -349,4 +331,140 @@
     <url-pattern>/*</url-pattern>
 </filter-mapping>
 ```
-### Junit을 이용한 테스트
+### Test
+#### 1. pom.xml
+0. spring-test
+
+```xml
+<!-- spring-test -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-test</artifactId>
+    <version>${org.springframework-version}</version>
+    <scope>test</scope>
+</dependency>
+```
+1. junit
+
+```xml
+<!-- Test -->
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.12</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.hamcrest</groupId>
+    <artifactId>hamcrest-core</artifactId>
+    <version>1.3</version>
+</dependency>
+```
+3. log4j : mybatis로그를 알기위한 모듈 (선택사항) 코딩단 p138 참조
+    - `/src/main/resources` 폴더에 `log4jdbc.log4j2.properties`파일과 `logback.xml`파일을 추가해야 한다.
+
+```xml
+<!-- log4jdbc-log4j2 -->
+<dependency>
+    <groupId>org.bgee.log4jdbc-log4j2</groupId>
+    <artifactId>log4jdbc-log4j2-jdbc4</artifactId>
+    <version>1.16</version>
+</dependency>
+```
+
+#### 2.Junit을 이용한 테스트
+1. MysqlConnectTest
+
+```java
+public class MysqlConnentTest {
+
+    private static final String DRIVER      = "com.mysql.cj.jdbc.Driver";
+    private static final String URL         = "jdbc:mysql://127.0.0.1:3306/board?serverTimezone=Asia/Seoul&useSSL=false";
+    private static final String USERNAME    = "study";
+    private static final String PASSWORD    = "study";
+    
+    @Test
+    public void testConnection() throws Exception{
+        Class.forName(DRIVER);
+        
+        try {
+            Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            System.out.println(con);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+
+}
+```
+2. DataSourceTest
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:spring/root-context.xml"})
+public class DataSourceTest {
+    
+    @Autowired
+    private DataSource ds;
+    
+    @Test
+    public void testConnection() throws Exception{
+        try {
+            Connection con = ds.getConnection();
+            System.out.println(con);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+
+}
+```
+3. MyBatisTest
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:spring/root-context.xml"})
+public class MyBatisTest {
+
+    @Inject
+    private SqlSessionFactory sqlFactory;
+    
+    @Test
+    public void testFactory() {
+        System.out.println(sqlFactory);
+    }
+    
+    @Test
+    public void testSession() throws Exception {
+        try(SqlSession session = sqlFactory.openSession()) {
+            System.out.println(session);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+```
+4. *ContrllerTest - servlet 3.1.0이상 / 잘안쓰는거 같음
+5. *DAOTest
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(
+        locations = {"classpath:spring/root-context.xml"})
+public class BoardDAOTest {
+
+    @Inject
+    private BoardDAO dao;
+    
+    private static Logger logger = LoggerFactory.getLogger(BoardDAOTest.class);
+
+    // @Test 작성
+    
+}
+```
